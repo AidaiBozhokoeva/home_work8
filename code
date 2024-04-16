@@ -1,0 +1,117 @@
+import json
+
+# Функция для добавления новой записи в справочник
+def add_contact(contacts, surname, name, patronymic, phone):
+    contact = {
+        'surname': surname,
+        'name': name,
+        'patronymic': patronymic,
+        'phone': phone
+    }
+    contacts.append(contact)
+    print("Запись добавлена успешно!")
+
+# Функция для вывода всех записей из справочника
+def print_contacts(contacts):
+    if contacts:
+        for i, contact in enumerate(contacts, 1):
+            print(f"{i}. {contact['surname']} {contact['name']} {contact['patronymic']}: {contact['phone']}")
+    else:
+        print("Справочник пуст.")
+
+# Функция для поиска записей по заданной характеристике
+def find_contacts(contacts, key, value):
+    found_contacts = [contact for contact in contacts if contact[key] == value]
+    if found_contacts:
+        print("Найденные контакты:")
+        print_contacts(found_contacts)
+    else:
+        print("Контакты не найдены.")
+
+# Функция для изменения данных контакта
+def edit_contact(contacts, key, value, new_value):
+    for contact in contacts:
+        if contact[key] == value:
+            contact[key] = new_value
+            print("Данные успешно изменены!")
+            return
+    print("Контакт не найден.")
+
+# Функция для удаления контакта по имени или фамилии
+def delete_contact(contacts, key, value):
+    for contact in contacts:
+        if contact[key] == value:
+            contacts.remove(contact)
+            print("Контакт успешно удален!")
+            return
+    print("Контакт не найден.")
+
+# Функция для сохранения данных справочника в текстовый файл
+def save_contacts_to_file(contacts, filename):
+    with open(filename, 'w') as file:
+        json.dump(contacts, file)
+    print(f"Данные сохранены в файл {filename}")
+
+# Функция для импорта данных из текстового файла в справочник
+def import_contacts_from_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            contacts = json.load(file)
+        print(f"Данные импортированы из файла {filename}")
+        return contacts
+    except FileNotFoundError:
+        print("Файл не найден.")
+        return []
+
+# Пример использования функций
+def main():
+    contacts = []
+
+    while True:
+        print("\nМеню:")
+        print("1. Добавить контакт")
+        print("2. Вывести все контакты")
+        print("3. Найти контакт")
+        print("4. Изменить контакт")
+        print("5. Удалить контакт")
+        print("6. Сохранить контакты в файл")
+        print("7. Импортировать контакты из файла")
+        print("8. Выйти")
+
+        choice = input("Выберите действие: ")
+
+        if choice == '1':
+            surname = input("Введите фамилию: ")
+            name = input("Введите имя: ")
+            patronymic = input("Введите отчество: ")
+            phone = input("Введите номер телефона: ")
+            add_contact(contacts, surname, name, patronymic, phone)
+        elif choice == '2':
+            print_contacts(contacts)
+        elif choice == '3':
+            key = input("Введите характеристику для поиска (surname, name, patronymic, phone): ")
+            value = input("Введите значение для поиска: ")
+            find_contacts(contacts, key, value)
+        elif choice == '4':
+            key = input("Введите характеристику для изменения (surname, name, patronymic, phone): ")
+            value = input("Введите текущее значение: ")
+            new_value = input("Введите новое значение: ")
+            edit_contact(contacts, key, value, new_value)
+        elif choice == '5':
+            key = input("Введите характеристику для удаления (surname, name, patronymic, phone): ")
+            value = input("Введите значение для удаления: ")
+            delete_contact(contacts, key, value)
+        elif choice == '6':
+            filename = input("Введите имя файла для сохранения: ")
+            save_contacts_to_file(contacts, filename)
+        elif choice == '7':
+            filename = input("Введите имя файла для импорта: ")
+            contacts = import_contacts_from_file(filename)
+        elif choice == '8':
+            print("Выход из программы.")
+            break
+        else:
+            print("Некорректный выбор. Попробуйте снова.")
+
+if __name__ == "__main__":
+    main()
